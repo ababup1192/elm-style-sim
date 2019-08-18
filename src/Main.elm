@@ -128,71 +128,36 @@ view model =
             , style "margin-top" "20px"
             , style "background-color" "#DCDCDC"
             ]
-            [ div []
-                [ span [ style "margin-right" "10px" ] [ text "width" ]
-                , input
-                    [ type_ "range"
-                    , Attributes.min "0"
-                    , Attributes.max "200"
-                    , Attributes.step "1"
-                    , value <| String.fromInt widthValue
-                    , onChange UpdateWidth
-                    ]
-                    []
-                , span [] [ text widthPx ]
-                ]
-            , div []
-                [ span [ style "margin-right" "10px" ] [ text "height" ]
-                , input
-                    [ type_ "range"
-                    , Attributes.min "0"
-                    , Attributes.max "200"
-                    , Attributes.step "1"
-                    , value <| String.fromInt heightValue
-                    , onChange UpdateHeight
-                    ]
-                    []
-                , span [] [ text heightPx ]
-                ]
-            , div []
-                [ span [ style "margin-right" "10px" ] [ text "margin" ]
-                , input
-                    [ type_ "range"
-                    , Attributes.min "0"
-                    , Attributes.max "200"
-                    , Attributes.step "1"
-                    , value <| String.fromInt marginValue
-                    , onChange UpdateMargin
-                    ]
-                    []
-                , span [] [ text marginPx ]
-                ]
-            , div []
-                [ span [ style "margin-right" "10px" ] [ text "padding" ]
-                , input
-                    [ type_ "range"
-                    , Attributes.min "0"
-                    , Attributes.max "200"
-                    , Attributes.step "1"
-                    , value <| String.fromInt paddingValue
-                    , onChange UpdatePadding
-                    ]
-                    []
-                , span [] [ text paddingPx ]
-                ]
-            , div []
-                [ span [ style "margin-right" "10px" ] [ text "border" ]
-                , input
-                    [ type_ "range"
-                    , Attributes.min "0"
-                    , Attributes.max "200"
-                    , Attributes.step "1"
-                    , value <| String.fromInt borderValue
-                    , onChange UpdateBorder
-                    ]
-                    []
-                , span [] [ text borderPx ]
-                ]
+            [ sliderView
+                { labelText = "width"
+                , val = widthValue
+                , msg = UpdateWidth
+                , px = widthPx
+                }
+            , sliderView
+                { labelText = "height"
+                , val = heightValue
+                , msg = UpdateHeight
+                , px = heightPx
+                }
+            , sliderView
+                { labelText = "margin"
+                , val = marginValue
+                , msg = UpdateMargin
+                , px = marginPx
+                }
+            , sliderView
+                { labelText = "padding"
+                , val = paddingValue
+                , msg = UpdatePadding
+                , px = paddingPx
+                }
+            , sliderView
+                { labelText = "border"
+                , val = borderValue
+                , msg = UpdateBorder
+                , px = borderPx
+                }
             , div
                 [ style "width" widthPx
                 , style "height" heightPx
@@ -205,6 +170,35 @@ view model =
             ]
         ]
     }
+
+
+type alias SliderOption =
+    { labelText : String
+    , val : Int
+    , msg : String -> Msg
+    , px : String
+    }
+
+
+sliderView : SliderOption -> Html Msg
+sliderView sliderOption =
+    let
+        { labelText, val, msg, px } =
+            sliderOption
+    in
+    div []
+        [ span [ style "margin-right" "10px" ] [ text labelText ]
+        , input
+            [ type_ "range"
+            , Attributes.min "0"
+            , Attributes.max "200"
+            , Attributes.step "1"
+            , value <| String.fromInt val
+            , onChange msg
+            ]
+            []
+        , span [] [ text px ]
+        ]
 
 
 onChange : (String -> msg) -> Attribute msg
