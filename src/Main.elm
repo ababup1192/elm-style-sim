@@ -4,7 +4,6 @@ import Browser
 import Html exposing (..)
 import Html.Attributes as Attributes exposing (..)
 import Html.Events exposing (..)
-import Json.Decode as JD
 
 
 
@@ -194,16 +193,11 @@ sliderView sliderOption =
             , Attributes.max "200"
             , Attributes.step "1"
             , value <| String.fromInt val
-            , onChange msg
+            , onInput msg
             ]
             []
         , span [] [ text px ]
         ]
-
-
-onChange : (String -> msg) -> Attribute msg
-onChange onChangeAction =
-    on "change" <| JD.map onChangeAction targetValue
 
 
 
