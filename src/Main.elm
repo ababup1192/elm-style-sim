@@ -185,7 +185,7 @@ view model =
                     , style "width" widthPx
                     , style "height" heightPx
                     , style "margin" marginPx
-                    , style "border" <| borderPx ++ " solid #7E57C2"
+                    , style "border" <| borderPx ++ " solid grey"
                     , style "padding" paddingPx
                     , style "box-sizing" boxSizingValue
                     ]
