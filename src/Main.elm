@@ -18,6 +18,7 @@ type alias Model =
     , marginValue : Int
     , paddingValue : Int
     , borderValue : Int
+    , boxSizingValue : String
     }
 
 
@@ -28,6 +29,7 @@ init _ =
       , marginValue = 200
       , paddingValue = 20
       , borderValue = 20
+      , boxSizingValue = "content-box"
       }
     , Cmd.none
     )
@@ -45,6 +47,7 @@ type Msg
     | UpdateMargin String
     | UpdatePadding String
     | UpdateBorder String
+    | UpdateBoxSizing String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -89,6 +92,13 @@ update msg model =
             , Cmd.none
             )
 
+        UpdateBoxSizing boxSizingV ->
+            ( { model
+                | boxSizingValue = boxSizingV
+              }
+            , Cmd.none
+            )
+
 
 
 -- ---------------------------
@@ -99,7 +109,7 @@ update msg model =
 view : Model -> Browser.Document Msg
 view model =
     let
-        { widthValue, heightValue, marginValue, paddingValue, borderValue } =
+        { widthValue, heightValue, marginValue, paddingValue, borderValue, boxSizingValue } =
             model
 
         widthPx =
@@ -119,12 +129,10 @@ view model =
     in
     { title = "Elm Style Sim"
     , body =
-        [ select []
-            [ option [] [ text "Basic - Pading & Margin" ]
-            ]
-        , div
+        [ div
             [ style "height" "100%"
             , style "margin-top" "20px"
+            , style "padding" "10px"
             , style "background-color" "#DCDCDC"
             ]
             [ sliderView
@@ -157,15 +165,35 @@ view model =
                 , msg = UpdateBorder
                 , px = borderPx
                 }
-            , div
-                [ style "width" widthPx
-                , style "height" heightPx
-                , style "margin" marginPx
-                , style "border" <| borderPx ++ " solid #7E57C2"
-                , style "padding" paddingPx
-                , style "background-color" "#FFA726"
+            , div []
+                [ input [ type_ "radio", checked <| boxSizingValue == "content-box", value "content-box", onInput UpdateBoxSizing ] []
+                , label [ name "box-sizing" ] [ text "content-box" ]
+                , input [ type_ "radio", checked <| boxSizingValue == "border-box", value "border-box", onInput UpdateBoxSizing ] []
+                , label [ name "box-sizing" ] [ text "border-box" ]
+                , input [ type_ "radio", checked <| boxSizingValue == "inherit", value "inherit", onInput UpdateBoxSizing ] []
+                , label [ name "box-sizing" ] [ text "inherit" ]
                 ]
-                []
+            , div [ class "color-pallet" ]
+                [ p [ class "green" ] [ text "margin" ]
+                , p [ class "grey" ] [ text "border" ]
+                , p [ class "blue" ] [ text "padding" ]
+                , p [ class "red" ] [ text "content" ]
+                ]
+            , div [ class "container" ]
+                [ div
+                    [ class "box"
+                    , style "width" widthPx
+                    , style "height" heightPx
+                    , style "margin" marginPx
+                    , style "border" <| borderPx ++ " solid #7E57C2"
+                    , style "padding" paddingPx
+                    , style "box-sizing" boxSizingValue
+                    ]
+                    [ div
+                        [ class "content" ]
+                        []
+                    ]
+                ]
             ]
         ]
     }
