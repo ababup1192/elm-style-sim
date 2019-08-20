@@ -26,10 +26,10 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { widthValue = 120
       , heightValue = 120
-      , marginValue = 200
+      , marginValue = 50
       , paddingValue = 20
       , borderValue = 20
-      , boxSizingValue = "content-box"
+      , boxSizingValue = "border-box"
       }
     , Cmd.none
     )
@@ -135,49 +135,63 @@ view model =
             , style "padding" "10px"
             , style "background-color" "#DCDCDC"
             ]
-            [ sliderView
-                { labelText = "width"
-                , val = widthValue
-                , msg = UpdateWidth
-                , px = widthPx
-                }
-            , sliderView
-                { labelText = "height"
-                , val = heightValue
-                , msg = UpdateHeight
-                , px = heightPx
-                }
-            , sliderView
-                { labelText = "margin"
-                , val = marginValue
-                , msg = UpdateMargin
-                , px = marginPx
-                }
-            , sliderView
-                { labelText = "padding"
-                , val = paddingValue
-                , msg = UpdatePadding
-                , px = paddingPx
-                }
-            , sliderView
-                { labelText = "border"
-                , val = borderValue
-                , msg = UpdateBorder
-                , px = borderPx
-                }
-            , div []
-                [ input [ type_ "radio", checked <| boxSizingValue == "content-box", value "content-box", onInput UpdateBoxSizing ] []
-                , label [ name "box-sizing" ] [ text "content-box" ]
-                , input [ type_ "radio", checked <| boxSizingValue == "border-box", value "border-box", onInput UpdateBoxSizing ] []
+            [ div []
+                [ input [ type_ "radio", checked <| boxSizingValue == "border-box", value "border-box", onInput UpdateBoxSizing ] []
                 , label [ name "box-sizing" ] [ text "border-box" ]
-                , input [ type_ "radio", checked <| boxSizingValue == "inherit", value "inherit", onInput UpdateBoxSizing ] []
+                , input [ type_ "radio", checked <| boxSizingValue == "content-box", style "margin-left" "15px", value "content-box", onInput UpdateBoxSizing ] []
+                , label [ name "box-sizing" ] [ text "content-box" ]
+                , input [ type_ "radio", checked <| boxSizingValue == "inherit", style "margin-left" "15px", value "inherit", onInput UpdateBoxSizing ] []
                 , label [ name "box-sizing" ] [ text "inherit" ]
                 ]
             , div [ class "color-pallet" ]
-                [ p [ class "green" ] [ text "margin" ]
-                , p [ class "grey" ] [ text "border" ]
-                , p [ class "blue" ] [ text "padding" ]
+                [ sliderView
+                    { c = "green"
+                    , labelText = "margin"
+                    , val = marginValue
+                    , msg = UpdateMargin
+                    , px = marginPx
+                    }
+                , sliderView
+                    { c = "grey"
+                    , labelText = "border"
+                    , val = borderValue
+                    , msg = UpdateBorder
+                    , px = borderPx
+                    }
+                , sliderView
+                    { c = "blue"
+                    , labelText = "padding"
+                    , val = paddingValue
+                    , msg = UpdatePadding
+                    , px = paddingPx
+                    }
                 , p [ class "red" ] [ text "content" ]
+                , div [ class "color-pallet-item" ]
+                    [ span [ style "margin-right" "10px" ] [ text "width" ]
+                    , input
+                        [ type_ "range"
+                        , Attributes.min "0"
+                        , Attributes.max "200"
+                        , Attributes.step "1"
+                        , value <| String.fromInt widthValue
+                        , onInput UpdateWidth
+                        ]
+                        []
+                    , span [] [ text widthPx ]
+                    ]
+                , div [ class "color-pallet-item" ]
+                    [ span [ style "margin-right" "10px" ] [ text "height" ]
+                    , input
+                        [ type_ "range"
+                        , Attributes.min "0"
+                        , Attributes.max "200"
+                        , Attributes.step "1"
+                        , value <| String.fromInt heightValue
+                        , onInput UpdateHeight
+                        ]
+                        []
+                    , span [] [ text heightPx ]
+                    ]
                 ]
             , div [ class "container" ]
                 [ div
@@ -200,7 +214,8 @@ view model =
 
 
 type alias SliderOption =
-    { labelText : String
+    { c : String
+    , labelText : String
     , val : Int
     , msg : String -> Msg
     , px : String
@@ -210,11 +225,11 @@ type alias SliderOption =
 sliderView : SliderOption -> Html Msg
 sliderView sliderOption =
     let
-        { labelText, val, msg, px } =
+        { labelText, c, val, msg, px } =
             sliderOption
     in
-    div []
-        [ span [ style "margin-right" "10px" ] [ text labelText ]
+    div [ class "color-pallet-item" ]
+        [ p [ class c ] [ text labelText ]
         , input
             [ type_ "range"
             , Attributes.min "0"
